@@ -19,3 +19,6 @@ Thumbs.db
 # Claude Code 配置（个人隐私）
 .claude/settings.json
 .claude/tasks/
+
+# IDEA
+.idea
