@@ -1,0 +1,21 @@
+# 生成的输出文件
+output/
+
+# 考生作答数据（隐私）
+output/answers.json
+output/*.answers.json
+
+# Node.js 依赖（如果后续添加脚本）
+node_modules/
+
+# 临时文件
+*.tmp
+*.log
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# Claude Code 配置（个人隐私）
+.claude/settings.json
+.claude/tasks/
