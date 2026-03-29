@@ -1,63 +1,13 @@
 {
   "name": "ruankao-agent",
-  "version": "1.0.0",
-  "description": "软考（计算机技术与软件专业技术资格考试）备考工具 - 自动生成选择题、问答题、论文题并提供智能评分服务",
-  "author": {
-    "name": "coldingcode",
-    "url": "https://github.com/coldingcode"
+  "owner": {
+    "name": "coldingcode"
   },
-  "repository": "https://github.com/coldingcode/ruankao-agent",
-  "license": "MIT",
-  "keywords": [
-    "软考",
-    "考试",
-    "备考",
-    "架构设计师",
-    "试题生成",
-    "智能评分",
-    "system-architect",
-    "exam",
-    "education"
-  ],
-  "source": {
-    "type": "github",
-    "owner": "coldingcode",
-    "repo": "ruankao-agent",
-    "branch": "main"
-  },
-  "components": {
-    "commands": "./commands/",
-    "agents": "./agents/"
-  },
-  "userConfig": {
-    "pdf_source_path": {
-      "description": "PDF 复习资料路径（选择题生成用）",
-      "sensitive": false,
-      "default": ""
-    },
-    "exam_category": {
-      "description": "考试类别（如：系统架构设计师）",
-      "sensitive": false,
-      "default": "系统架构设计师"
-    }
-  },
-  "readme": "README.md",
-  "examples": [
+  "plugins": [
     {
-      "name": "生成模拟试卷",
-      "command": "/generate",
-      "description": "生成完整的软考模拟试卷，包含 75 道选择题、6 道问答题和 1 道论文题"
-    },
-    {
-      "name": "智能评分",
-      "command": "/grade",
-      "description": "对考生作答进行判分和评分，生成详细的评分报告"
+      "name": "pptx",
+      "description": "生成完整的软考模拟试卷，包含 75 道选择题、6 道问答题和 1 道论文题",
+      "source": "./"
     }
-  ],
-  "screenshots": [],
-  "categories": [
-    "education",
-    "productivity",
-    "exam-prep"
   ]
 }
