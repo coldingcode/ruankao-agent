@@ -5,7 +5,7 @@
   },
   "plugins": [
     {
-      "name": "pptx",
+      "name": "ruankao-agent",
       "description": "生成完整的软考模拟试卷，包含 75 道选择题、6 道问答题和 1 道论文题",
       "source": "./"
     }
