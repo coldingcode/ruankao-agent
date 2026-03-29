@@ -53,7 +53,7 @@ ruankao-agent/
 
 ```bash
 # 1. 添加 GitHub 市场（首次使用需要配置）
-/plugin market add github https://github.com/coldingcode/ruankao-agent
+/plugin marketplace add coldingcode/ruankao-agent
 
 # 2. 安装插件
 /plugin install ruankao-agent
