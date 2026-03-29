@@ -59,10 +59,13 @@ version: 1.0.0
 | 文件 | 说明 |
 |-----|------|
 | `output/index.html` | 考生答题界面 |
+| `output/exam_data.js` | 试题数据（JS 格式，解决本地文件 CORS 问题） |
 | `output/mcq_questions.json` | 选择题试题（不含答案） |
 | `output/essay_questions.json` | 问答题试题（不含答案） |
 | `output/paper_question.json` | 论文题试题（不含评分标准） |
 | `output/exam_manifest.json` | 考试元数据绑定文件 |
+
+**重要**：`index.html` 和 `exam_data.js` 必须在同一目录下，否则无法正常加载试题数据。
 
 ### 保密存储（评分时使用）
 
@@ -96,12 +99,24 @@ version: 1.0.0
 
 ```
 ✅ 正确设计：
-- 试题文件：不含答案，可安全嵌入 HTML
+- 试题文件：不含答案，转换为 JS 格式供 HTML 加载
 - 答案文件：独立存储，仅评分时读取
+- exam_data.js 只包含试题，不包含答案
 
 ❌ 错误设计：
 - 答案嵌入 HTML 或 JavaScript
 - 考生可通过查看源代码获得答案
+```
+
+### 本地文件加载方案
+
+由于本地 HTML 文件无法通过 AJAX 加载 JSON（CORS 限制），采用以下方案：
+
+```
+✅ 解决方案：
+- JSON 数据 → 转换为 JavaScript 文件 → 通过 <script> 标签加载
+- 示例：exam_data.js 中定义 const examData = {...};
+- index.html 中通过 <script src="exam_data.js"></script> 加载
 ```
 
 ### Manifest 绑定

@@ -30,7 +30,7 @@ version: 1.0.0
 
 ## 输出格式
 
-### 1. 试题文件（不含答案）- `output/mcq_questions.json`
+### 试题文件（不含答案）- `output/mcq_questions.json`
 
 ```json
 {
@@ -53,6 +53,8 @@ version: 1.0.0
   ]
 }
 ```
+
+**注意**：此文件供 assemble-agent 读取，转换为 JavaScript 格式后嵌入 HTML。
 
 ### 2. 答案文件（独立存储）- `output/mcq_answers.json`
 
@@ -91,13 +93,13 @@ version: 1.0.0
 
 ## 安全说明
 
-- ⚠️ `mcq_questions.json` 可以安全地嵌入 HTML 或提供给考生
+- ⚠️ `mcq_questions.json` 只包含试题，assemble-agent 会将其转换为 JavaScript 格式
 - ⚠️ `mcq_answers.json` **必须保密**，仅评分时使用
-- 答案文件应存储在安全位置，避免考生访问
+- 试题通过 `<script src="exam_data.js">` 加载，避免本地文件 CORS 问题
 
 ## 输出文件
 
-1. `output/mcq_questions.json` - 试题文件（不含答案）
+1. `output/mcq_questions.json` - 试题文件（不含答案，供 assemble-agent 读取）
 2. `output/mcq_answers.json` - 答案文件（独立存储，含解析）
 
 ## 注意事项

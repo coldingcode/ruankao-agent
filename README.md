@@ -29,6 +29,7 @@ ruankao-agent/
 ├── output/                   # 生成文件目录
 │   # 考生可见
 │   ├── index.html            # 答题界面
+│   ├── exam_data.js          # 试题数据（JS 格式，解决本地加载问题）
 │   ├── mcq_questions.json    # 选择题（无答案）
 │   ├── essay_questions.json  # 问答题（无答案）
 │   ├── paper_question.json   # 论文题（无评分标准）
@@ -81,9 +82,10 @@ ruankao-agent/
 ### 答题流程
 
 1. 运行 `/generate` 生成试卷
-2. 打开 `output/index.html` 进行答题
-3. 答题过程中自动保存进度到本地存储
-4. 完成后点击"导出作答"按钮，生成 `answers.json`
+2. 确保 `index.html` 和 `exam_data.js` 在同一目录下
+3. 双击打开 `output/index.html` 进行答题
+4. 答题过程中自动保存进度到本地存储
+5. 完成后点击"导出作答"按钮，生成 `answers.json`
 
 ### 评分
 
@@ -145,6 +147,7 @@ ruankao-agent/
 ```
 ✅ 考生可见（无答案）:
 ├── index.html
+├── exam_data.js
 ├── mcq_questions.json
 ├── essay_questions.json
 └── paper_question.json
