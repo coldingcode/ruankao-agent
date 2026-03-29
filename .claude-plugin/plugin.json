@@ -1,24 +1,5 @@
 {
   "name": "ruankao-agent",
   "version": "1.0.0",
-  "description": "软考（计算机技术与软件专业技术资格考试）备考工具 - 自动生成选择题、问答题、论文题并提供智能评分",
-  "author": {
-    "name": "coldingcode",
-    "url": "https://github.com/coldingcode"
-  },
-  "repository": "https://github.com/coldingcode/ruankao-agent",
-  "license": "MIT",
-  "keywords": ["软考", "考试", "备考", "架构设计师", "试题生成", "智能评分"],
-  "agents": "./agents/",
-  "commands": "./commands/",
-  "userConfig": {
-    "pdf_source_path": {
-      "description": "PDF 复习资料路径（选择题生成用）",
-      "sensitive": false
-    },
-    "exam_category": {
-      "description": "考试类别（如：系统架构设计师）",
-      "sensitive": false
-    }
-  }
+  "description": "软考（计算机技术与软件专业技术资格考试）备考工具 - 自动生成选择题、问答题、论文题并提供智能评分"
 }
