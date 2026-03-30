@@ -68,6 +68,8 @@ const examData = {
 
 ## HTML 模板结构
 
+完整的 HTML 模板代码如下（**Tab 标签式导航设计**）：
+
 ```html
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -76,483 +78,662 @@ const examData = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>软考模拟试卷 - 系统架构设计师</title>
     <style>
-        /* 样式定义 */
+        /* Tab 导航式布局 */
+        * { box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
             padding: 0;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
         }
-
         header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 20px;
             text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
-
-        main {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-
-        section {
-            background: white;
-            padding: 30px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .question {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            background: #fafafa;
-        }
-
-        .question-title {
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .options label {
-            display: block;
-            margin: 10px 0;
-            padding: 10px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .options label:hover {
-            background: #f0f0f0;
-            border-color: #999;
-        }
-
-        .options input[type="radio"] {
-            margin-right: 10px;
-        }
-
-        textarea {
-            width: 100%;
-            min-height: 150px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: inherit;
-            resize: vertical;
-        }
-
-        footer {
-            text-align: center;
-            padding: 30px;
-            background: white;
-            margin-top: 30px;
-        }
-
-        button {
-            padding: 12px 24px;
-            font-size: 16px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            margin: 0 10px;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5568d3;
-        }
-
-        .btn-secondary {
-            background: #e0e0e0;
-            color: #333;
-        }
-
-        .btn-secondary:hover {
-            background: #d0d0d0;
-        }
-
-        .nav-panel {
-            position: fixed;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-
-        .nav-item {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
-            text-align: center;
-            margin: 2px;
-            border: 1px solid #ddd;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .nav-item.answered {
-            background: #4CAF50;
-            color: white;
-            border-color: #4CAF50;
-        }
-
-        .nav-item.marked {
-            background: #ff9800;
-            color: white;
-            border-color: #ff9800;
-        }
-
+        header h1 { margin: 0 0 10px 0; font-size: 26px; font-weight: 600; }
+        #exam-info { font-size: 14px; opacity: 0.9; margin-bottom: 10px; }
         .timer {
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 10px;
+            font-size: 24px; font-weight: bold;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px; border-radius: 20px;
+            display: inline-block; font-family: 'Courier New', monospace;
+        }
+        .timer.warning { background: rgba(255, 87, 87, 0.8); animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+        /* 进度条 */
+        .progress-bar {
+            position: fixed; top: 0; left: 0; right: 0; height: 4px;
+            background: #e0e0e0; z-index: 1000;
+        }
+        .progress-fill {
+            height: 100%; background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%; transition: width 0.3s ease;
         }
 
-        .word-count {
-            text-align: right;
-            font-size: 14px;
-            color: #666;
-            margin-top: 5px;
+        /* 主容器和 Tab */
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .tab-container {
+            background: white; border-radius: 12px 12px 0 0;
+            overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .tabs {
+            display: flex; background: #f8f9ff;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .tab-btn {
+            flex: 1; padding: 16px 20px; border: none;
+            background: transparent; cursor: pointer;
+            font-size: 16px; font-weight: 500; color: #666;
+            transition: all 0.3s ease; position: relative;
+        }
+        .tab-btn:hover { background: #e8ebff; color: #667eea; }
+        .tab-btn.active { background: white; color: #667eea; }
+        .tab-btn.active::after {
+            content: ''; position: absolute; bottom: -2px;
+            left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        .tab-btn .tab-count {
+            display: inline-block; background: #e0e0e0; color: #666;
+            padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 8px;
+        }
+        .tab-btn.active .tab-count { background: #667eea; color: white; }
+        .tab-content { display: none; background: white; padding: 25px; min-height: 500px; }
+        .tab-content.active { display: block; }
+
+        /* 答题区域 */
+        .exam-section {
+            background: white; padding: 25px; border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 20px;
+        }
+        .exam-section h2 {
+            margin: 0 0 15px 0; color: #333; font-size: 20px;
+            padding-bottom: 12px; border-bottom: 2px solid #667eea;
+        }
+        .section-instructions {
+            background: #f8f9ff; padding: 12px 18px; border-radius: 8px;
+            margin-bottom: 20px; font-size: 14px; color: #555;
+            border-left: 4px solid #667eea;
+        }
+
+        /* 题目卡片 */
+        .question {
+            margin-bottom: 25px; padding: 20px; border: 1px solid #e8e8e8;
+            border-radius: 10px; background: #fafafa;
+            transition: all 0.3s ease; position: relative;
+        }
+        .question:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .question-header {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 15px;
+        }
+        .question-title { font-weight: 600; color: #333; font-size: 16px; }
+        .question-tag {
+            font-size: 12px; padding: 4px 10px; border-radius: 12px; font-weight: 500;
+        }
+        .tag-required { background: #e3f2fd; color: #1976d2; }
+        .tag-optional { background: #fff3e0; color: #f57c00; }
+        .tag-difficulty { background: #f3e5f5; color: #7b1fa2; }
+
+        /* 选项样式 */
+        .options { margin-top: 15px; }
+        .options label {
+            display: flex; align-items: flex-start; margin: 10px 0;
+            padding: 12px 16px; background: white; border: 2px solid #e0e0e0;
+            border-radius: 8px; cursor: pointer; transition: all 0.2s ease;
+        }
+        .options label:hover { background: #f5f5f5; border-color: #bdbdbd; }
+        .options label.selected { background: #e8f5e9; border-color: #4caf50; }
+        .options input[type="radio"] { margin-right: 12px; margin-top: 4px; flex-shrink: 0; }
+
+        /* 案例背景框 */
+        .scenario-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            padding: 18px; margin: 15px 0; border-radius: 8px;
+            border-left: 4px solid #667eea; font-size: 15px; line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        /* 子问题和文本域 */
+        .sub-question { margin: 18px 0; padding: 15px; background: white; border-radius: 8px; border: 1px solid #e0e0e0; }
+        .sub-question-text { font-weight: 500; color: #333; margin-bottom: 12px; }
+        textarea {
+            width: 100%; min-height: 100px; padding: 12px; border: 2px solid #e0e0e0;
+            border-radius: 8px; font-family: inherit; font-size: 14px;
+            resize: vertical; transition: border-color 0.2s;
+        }
+        textarea:focus { outline: none; border-color: #667eea; }
+        .word-count { text-align: right; font-size: 13px; color: #888; margin-top: 6px; }
+
+        /* 底部按钮 */
+        footer {
+            text-align: center; padding: 25px 20px; background: white;
+            margin-top: 20px; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-radius: 12px;
+        }
+        .footer-buttons { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        button {
+            padding: 12px 24px; font-size: 15px; border: none; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s ease; font-weight: 500;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); }
+        .btn-secondary { background: #f5f5f5; color: #333; border: 2px solid #e0e0e0; }
+        .btn-secondary:hover { background: #e0e0e0; }
+        .btn-success { background: linear-gradient(135deg, #4caf50 0%, #45a049 100%); color: white; }
+        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4); }
+
+        /* 标记按钮 */
+        .mark-toggle {
+            position: absolute; top: 12px; right: 12px; width: 32px; height: 32px;
+            border-radius: 50%; border: 2px solid #ddd; background: white;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 16px; transition: all 0.2s;
+            line-height: 1; flex-shrink: 0;
+        }
+        .mark-toggle:hover { border-color: #ff9800; color: #ff9800; transform: rotate(15deg); }
+        .mark-toggle.marked { background: #ff9800; color: white; border-color: #ff9800; }
+
+        /* 导航面板 */
+        .nav-panel { background: white; padding: 20px; margin-top: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .nav-panel h4 { margin: 0 0 15px 0; color: #333; font-size: 15px; }
+        .nav-items { display: flex; flex-wrap: wrap; gap: 8px; }
+        .nav-item {
+            width: 34px; height: 34px; line-height: 34px; text-align: center;
+            border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer;
+            font-size: 13px; transition: all 0.2s ease; background: white;
+        }
+        .nav-item:hover { border-color: #667eea; background: #f5f5ff; }
+        .nav-item.answered { background: #4caf50; color: white; border-color: #4caf50; }
+        .nav-item.marked { background: #ff9800; color: white; border-color: #ff9800; }
+
+        /* 弹窗 */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); z-index: 1000;
+            justify-content: center; align-items: center;
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: white; padding: 35px; border-radius: 16px;
+            max-width: 450px; width: 90%; text-align: center;
+        }
+        .modal-content h3 { margin: 0 0 18px 0; color: #333; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 18px 0; }
+        .stat-item { background: #f5f5f5; padding: 12px; border-radius: 8px; }
+        .stat-value { font-size: 20px; font-weight: bold; color: #667eea; }
+        .stat-label { font-size: 12px; color: #888; margin-top: 4px; }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .tabs { flex-direction: column; }
+            .tab-btn { border-bottom: 1px solid #e0e0e0; }
+            .container { padding: 10px; }
+            .footer-buttons { flex-direction: column; }
+            button { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
     <header>
         <h1 id="exam-title">系统架构设计师模拟试卷</h1>
         <div id="exam-info"></div>
-        <div class="timer" id="timer">00:00:00</div>
+        <div class="timer" id="timer">02:30:00</div>
     </header>
 
-    <nav class="nav-panel" id="nav-panel">
-        <!-- 题号导航面板 -->
-    </nav>
+    <div class="container">
+        <!-- Tab 导航 -->
+        <div class="tab-container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('part1-mcq')">
+                    📋 选择题 <span class="tab-count" id="mcq-count">75</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('part2-essay')">
+                    📝 问答题 <span class="tab-count" id="essay-count">6</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('part3-paper')">
+                    📄 论文题 <span class="tab-count">1</span>
+                </button>
+            </div>
 
-    <main>
-        <section id="part1-mcq">
-            <h2>第一部分：选择题（75 题，每题 1 分，共 75 分）</h2>
-            <div id="mcq-questions"></div>
-        </section>
+            <!-- 选择题部分 -->
+            <div id="part1-mcq" class="tab-content active">
+                <div class="exam-section">
+                    <h2>第一部分：选择题</h2>
+                    <div class="section-instructions">
+                        <strong>答题说明：</strong>共 75 题，每题 1 分，共 75 分。请从 A、B、C、D 四个选项中选择一个正确答案。
+                    </div>
+                    <div id="mcq-questions"></div>
+                </div>
+                <div class="nav-panel"><h4>选择题导航（1-75）</h4><div class="nav-items" id="mcq-nav-items"></div></div>
+            </div>
 
-        <section id="part2-essay">
-            <h2>第二部分：问答题（6 题，共 75 分）</h2>
-            <div id="essay-questions"></div>
-        </section>
+            <!-- 问答题部分 -->
+            <div id="part2-essay" class="tab-content">
+                <div class="exam-section">
+                    <h2>第二部分：问答题</h2>
+                    <div class="section-instructions">
+                        <strong>答题说明：</strong>共 6 道案例分析题。第 1 题为必答题，第 2-6 题为选答题（请任选 3 题作答）。总分 75 分。
+                    </div>
+                    <div id="essay-questions"></div>
+                </div>
+                <div class="nav-panel"><h4>问答题导航（76-81）</h4><div class="nav-items" id="essay-nav-items"></div></div>
+            </div>
 
-        <section id="part3-paper">
-            <h2>第三部分：论文题（1 题，共 75 分）</h2>
-            <div id="paper-question"></div>
-        </section>
-    </main>
+            <!-- 论文题部分 -->
+            <div id="part3-paper" class="tab-content">
+                <div class="exam-section">
+                    <h2>第三部分：论文题</h2>
+                    <div class="section-instructions">
+                        <strong>答题说明：</strong>请根据题目要求撰写一篇 2000-2500 字的论文。建议时间：120 分钟。
+                    </div>
+                    <div id="paper-question"></div>
+                </div>
+            </div>
+        </div>
 
-    <footer>
-        <button class="btn-primary" onclick="exportAnswers()">导出作答</button>
-        <button class="btn-secondary" onclick="saveProgress()">保存进度</button>
-        <button class="btn-secondary" onclick="markAll()">全部标记</button>
-    </footer>
+        <!-- 底部按钮 -->
+        <footer>
+            <div class="footer-buttons">
+                <button class="btn-primary" onclick="exportAnswers()">📥 导出答案</button>
+                <button class="btn-success" onclick="submitExam()">✓ 提交试卷</button>
+                <button class="btn-secondary" onclick="saveProgress()">💾 保存进度</button>
+                <button class="btn-secondary" onclick="showSummary()">📊 查看摘要</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 弹窗 -->
+    <div class="modal" id="summary-modal">
+        <div class="modal-content">
+            <h3>答题摘要</h3>
+            <div class="stats-grid" id="stats-grid"></div>
+            <p id="summary-text"></p>
+            <button class="btn-primary" onclick="closeModal('summary-modal')">关闭</button>
+        </div>
+    </div>
+    <div class="modal" id="submit-modal">
+        <div class="modal-content">
+            <h3>确认提交试卷？</h3>
+            <div class="stats-grid" id="submit-stats"></div>
+            <p>提交后将无法修改答案，请确认所有题目已完成作答。</p>
+            <div style="display: flex; gap: 12px; justify-content: center; margin-top: 18px;">
+                <button class="btn-secondary" onclick="closeModal('submit-modal')">取消</button>
+                <button class="btn-primary" onclick="confirmSubmit()">确认提交</button>
+            </div>
+        </div>
+    </div>
 
     <!-- 加载试题数据 -->
     <script src="exam_data.js"></script>
 
     <script>
-        // 作答数据管理
         const userAnswers = {};
-        let examId = null;
-        let timerInterval = null;
-        let startTime = null;
+        const markedQuestions = new Set();
+        let examId = null, timerInterval = null, timeRemaining = 150 * 60, currentTab = 'part1-mcq';
 
-        // 初始化页面
         window.onload = function() {
             if (typeof examData === 'undefined') {
                 alert('无法加载试题数据，请确保 exam_data.js 文件存在');
                 return;
             }
-
             examId = examData.exam_id;
-            startTime = new Date();
-
             renderExam();
             loadSavedAnswers();
             startTimer();
+            updateProgress();
         };
 
-        // 渲染试题
-        function renderExam() {
-            renderMCQ();
-            renderEssay();
-            renderPaper();
-            renderNavPanel();
-            updateExamInfo();
+        function switchTab(tabId) {
+            currentTab = tabId;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 渲染选择题
+        function renderExam() {
+            renderMCQ(); renderEssay(); renderPaper(); renderNavPanels(); updateExamInfo();
+        }
+
         function renderMCQ() {
             const container = document.getElementById('mcq-questions');
-            container.innerHTML = examData.mcq.questions.map((q, index) => `
-                <div class="question" id="mcq-${index + 1}">
-                    <div class="question-title">${index + 1}. ${q.question}</div>
+            const mcqCount = examData.mcq.questions.length;
+            document.getElementById('mcq-count').textContent = mcqCount;
+            container.innerHTML = examData.mcq.questions.map((q, index) => {
+                const questionNum = index + 1;
+                const difficultyText = { 'easy': '简单', 'medium': '中等', 'hard': '困难' }[q.difficulty];
+                return `<div class="question" id="mcq-${questionNum}">
+                    <button class="mark-toggle" onclick="toggleMark(${questionNum}, 'mcq')" title="标记此题">★</button>
+                    <div class="question-header">
+                        <span class="question-title">${questionNum}. ${q.question}</span>
+                        <span class="question-tag tag-difficulty">${difficultyText}</span>
+                    </div>
                     <div class="options">
                         ${Object.entries(q.options).map(([key, value]) => `
-                            <label>
-                                <input type="radio" name="mcq-${index + 1}" value="${key}" onchange="saveMCQAnswer(${index + 1}, '${key}')">
-                                ${key}. ${value}
+                            <label id="label-mcq-${questionNum}-${key}" onclick="selectMCQOption(${questionNum}, '${key}')">
+                                <input type="radio" name="mcq-${questionNum}" value="${key}">
+                                <span><strong>${key}.</strong> ${value}</span>
                             </label>
                         `).join('')}
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
+            document.getElementById('mcq-nav-items').innerHTML = Array.from({length: mcqCount}, (_, i) =>
+                `<span class="nav-item" id="nav-mcq-${i+1}" onclick="scrollToQuestion('mcq-${i+1}')">${i+1}</span>`
+            ).join('');
         }
 
-        // 渲染问答题
         function renderEssay() {
             const container = document.getElementById('essay-questions');
-            container.innerHTML = examData.essay.questions.map((q, index) => `
-                <div class="question" id="essay-${index + 76}">
-                    <div class="question-title">
-                        ${q.type === 'required' ? '【必答题】' : '【选答题】'}
-                        题目 ${index + 76}: ${q.title}
-                        ${q.type === 'required' ? '' : '（选答）'}
+            container.innerHTML = examData.essay.questions.map((q, index) => {
+                const questionNum = index + 76;
+                const isRequired = q.type === 'required';
+                return `<div class="question" id="essay-${questionNum}">
+                    <button class="mark-toggle" onclick="toggleMark(${questionNum}, 'essay')" title="标记此题">★</button>
+                    <div class="question-header">
+                        <span class="question-title">
+                            <span class="question-tag ${isRequired ? 'tag-required' : 'tag-optional'}">
+                                ${isRequired ? '必答题' : '选答题'}
+                            </span> 题目 ${questionNum}: ${q.title}
+                        </span>
                     </div>
-                    <div style="background: #f0f0f0; padding: 15px; margin: 15px 0; border-radius: 4px;">
-                        <strong>案例背景：</strong>${q.scenario}
-                    </div>
+                    <div class="scenario-box">${q.scenario}</div>
                     ${q.sub_questions.map((sq, sqIndex) => `
-                        <div style="margin: 15px 0;">
-                            <strong>${sq.part}</strong> ${sq.text}（${sq.points} 分）
+                        <div class="sub-question">
+                            <div class="sub-question-text">${sq.part} ${sq.text}</div>
+                            <textarea id="essay-${questionNum}-${sqIndex+1}"
+                                placeholder="请在此输入您的答案..."
+                                oninput="updateWordCount(this, 'wc-essay-${questionNum}-${sqIndex+1}')"
+                                onchange="saveEssayAnswer(${questionNum}, ${sqIndex+1}, this.value)"></textarea>
+                            <div class="word-count" id="wc-essay-${questionNum}-${sqIndex+1}">0 字</div>
                         </div>
-                        <textarea
-                            id="essay-${index + 76}-${sqIndex + 1}"
-                            placeholder="请在此输入您的答案..."
-                            oninput="updateWordCount(this, 'wc-essay-${index + 76}-${sqIndex + 1}')"
-                            onchange="saveEssayAnswer(${index + 76}, ${sqIndex + 1}, this.value)"
-                        ></textarea>
-                        <div class="word-count" id="wc-essay-${index + 76}-${sqIndex + 1}">0 字</div>
                     `).join('')}
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
+            document.getElementById('essay-nav-items').innerHTML = Array.from({length: 6}, (_, i) =>
+                `<span class="nav-item" id="nav-essay-${i+76}" onclick="scrollToQuestion('essay-${i+76}')">${i+76}</span>`
+            ).join('');
         }
 
-        // 渲染论文题
         function renderPaper() {
             const q = examData.paper.topic;
-            document.getElementById('paper-question').innerHTML = `
-                <div class="question" id="paper-82">
-                    <div class="question-title">题目：${q.title}</div>
-                    <div style="background: #f0f0f0; padding: 15px; margin: 15px 0; border-radius: 4px;">
-                        <strong>命题背景：</strong>${q.background}
-                    </div>
-                    <div style="margin: 15px 0;">
-                        <strong>写作要求：</strong>
-                        <ul>
-                            ${q.requirements.map(r => `<li>${r}</li>`).join('')}
-                        </ul>
-                    </div>
-                    <div style="margin: 15px 0;">
-                        <strong>子问题：</strong>
-                        <ol>
-                            ${q.sub_questions.map(sq => `<li>${sq}</li>`).join('')}
-                        </ol>
-                    </div>
-                    <div style="margin: 15px 0; background: #e8f4f8; padding: 10px; border-radius: 4px;">
-                        <strong>写作指导：</strong>${q.writing_guidelines['字数要求']}，${q.writing_guidelines['结构建议']}
-                    </div>
-                    <textarea
-                        id="paper-82"
-                        placeholder="请在此输入您的论文..."
-                        style="min-height: 400px;"
-                        oninput="updateWordCount(this, 'wc-paper-82')"
-                        onchange="savePaperAnswer(82, this.value)"
-                    ></textarea>
-                    <div class="word-count" id="wc-paper-82">0 字</div>
+            document.getElementById('paper-question').innerHTML = `<div class="question" id="paper-82">
+                <div class="question-header"><span class="question-title">题目：${q.title}</span></div>
+                <div class="scenario-box">${q.background}</div>
+                <div style="margin: 15px 0;">
+                    <strong>写作要求：</strong><ul>${q.requirements.map(r => `<li>${r}</li>`).join('')}</ul>
                 </div>
-            `;
+                <div style="margin: 15px 0;">
+                    <strong>论述要点：</strong><ol>${q.sub_questions.map(sq => `<li>${sq}</li>`).join('')}</ol>
+                </div>
+                <div style="margin: 15px 0; background: #e8f4f8; padding: 12px; border-radius: 8px;">
+                    <strong>写作指导：</strong>${q.writing_guidelines['字数要求']}，${q.writing_guidelines['结构建议']}
+                </div>
+                <textarea id="paper-82-content" placeholder="请在此输入您的论文正文..."
+                    style="min-height: 400px; font-size: 15px; line-height: 1.8;"
+                    oninput="updateWordCount(this, 'wc-paper-82')" onchange="savePaperAnswer(82, this.value)"></textarea>
+                <div class="word-count" id="wc-paper-82">0 字</div>
+            </div>`;
         }
 
-        // 渲染导航面板
-        function renderNavPanel() {
-            const nav = document.getElementById('nav-panel');
-            let html = '<h4>题号导航</h4>';
-
-            // 选择题导航
-            html += '<div><strong>选择题 (1-75)</strong></div>';
-            for (let i = 1; i <= 75; i++) {
-                html += `<span class="nav-item" id="nav-${i}" onclick="scrollToQuestion('mcq-${i}')">${i}</span>`;
-            }
-
-            // 问答题导航
-            html += '<div><strong>问答题 (76-81)</strong></div>';
-            for (let i = 76; i <= 81; i++) {
-                html += `<span class="nav-item" id="nav-${i}" onclick="scrollToQuestion('essay-${i}')">${i}</span>`;
-            }
-
-            // 论文题导航
-            html += '<div><strong>论文题 (82)</strong></div>';
-            html += `<span class="nav-item" id="nav-82" onclick="scrollToQuestion('paper-82')">82</span>`;
-
-            nav.innerHTML = html;
-        }
-
-        // 更新考试信息
+        function renderNavPanels() { updateExamInfo(); }
         function updateExamInfo() {
-            const info = document.getElementById('exam-info');
-            info.innerHTML = `
-                考试类型：${examData.exam_type} |
-                试题 ID：${examId} |
-                总分：225 分
-            `;
+            document.getElementById('exam-info').innerHTML = `试卷 ID: ${examId} | 总分：225 分（75+75+75） | 时限：150 分钟`;
         }
 
-        // 滚动到指定题目
         function scrollToQuestion(id) {
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element.style.boxShadow = '0 0 20px rgba(102, 126, 234, 0.5)';
+                setTimeout(() => { element.style.boxShadow = ''; }, 2000);
+            }
         }
 
-        // 更新字数统计
         function updateWordCount(textarea, elementId) {
-            const count = textarea.value.length;
-            document.getElementById(elementId).textContent = `${count} 字`;
+            document.getElementById(elementId).textContent = `${textarea.value.length} 字`;
         }
 
-        // 保存选择题答案
         function saveMCQAnswer(questionId, answer) {
             userAnswers[`mcq-${questionId}`] = answer;
-            updateNavStatus(questionId, 'answered');
+            document.querySelectorAll(`input[name="mcq-${questionId}"]`).forEach(input => {
+                input.parentElement.classList.remove('selected');
+            });
+            const selected = document.querySelector(`input[name="mcq-${questionId}"][value="${answer}"]`);
+            if (selected) selected.parentElement.classList.add('selected');
+            updateNavStatus(`mcq-${questionId}`, 'answered');
             saveToLocalStorage();
+            updateProgress();
         }
 
-        // 保存问答题答案
-        function saveEssayAnswer(questionId, subPart, answer) {
-            const key = `essay-${questionId}-${subPart}`;
-            if (!userAnswers[key]) userAnswers[key] = {};
-            userAnswers[key].answer = answer;
-            updateNavStatus(questionId, 'answered');
-            saveToLocalStorage();
-        }
-
-        // 保存论文题答案
-        function savePaperAnswer(questionId, answer) {
-            userAnswers[`paper-${questionId}`] = answer;
-            updateNavStatus(questionId, 'answered');
-            saveToLocalStorage();
-        }
-
-        // 更新导航状态
-        function updateNavStatus(questionId, status) {
-            const navItem = document.getElementById(`nav-${questionId}`);
-            if (navItem) {
-                navItem.className = `nav-item ${status}`;
+        function selectMCQOption(questionId, option) {
+            document.querySelectorAll(`input[name="mcq-${questionId}"]`).forEach(input => {
+                input.parentElement.classList.remove('selected');
+            });
+            const radio = document.querySelector(`input[name="mcq-${questionId}"][value="${option}"]`);
+            if (radio) {
+                radio.checked = true;
+                saveMCQAnswer(questionId, option);
             }
         }
 
-        // 保存到本地存储
+        function saveEssayAnswer(questionId, subPart, answer) {
+            userAnswers[`essay-${questionId}-${subPart}`] = answer;
+            updateNavStatus(`essay-${questionId}`, 'answered');
+            saveToLocalStorage();
+            updateProgress();
+        }
+
+        function savePaperAnswer(questionId, answer) {
+            userAnswers[`paper-${questionId}`] = answer;
+            updateNavStatus('paper-82', 'answered');
+            saveToLocalStorage();
+            updateProgress();
+        }
+
+        function updateNavStatus(questionKey, status) {
+            const navItem = document.getElementById(`nav-${questionKey}`);
+            if (navItem) navItem.classList.add(status);
+        }
+
+        function toggleMark(questionId, type) {
+            const key = `${type}-${questionId}`;
+            const btn = event.currentTarget;
+            if (markedQuestions.has(key)) {
+                markedQuestions.delete(key);
+                btn.classList.remove('marked');
+            } else {
+                markedQuestions.add(key);
+                btn.classList.add('marked');
+            }
+            const navItem = document.getElementById(`nav-${key}`);
+            if (navItem) navItem.classList.toggle('marked');
+        }
+
         function saveToLocalStorage() {
             const data = {
                 exam_id: examId,
                 updated_at: new Date().toISOString(),
-                answers: userAnswers
+                answers: userAnswers,
+                marked: Array.from(markedQuestions)
             };
             localStorage.setItem('ruankao_user_answers', JSON.stringify(data));
         }
 
-        // 加载已保存的作答
         function loadSavedAnswers() {
             const saved = localStorage.getItem('ruankao_user_answers');
             if (saved) {
                 const data = JSON.parse(saved);
                 if (data.exam_id === examId && data.answers) {
                     Object.assign(userAnswers, data.answers);
-
-                    // 恢复选择题
                     Object.keys(userAnswers).forEach(key => {
                         if (key.startsWith('mcq-')) {
-                            const qId = parseInt(key.replace('mcq-', ''));
-                            const radio = document.querySelector(`input[name="mcq-${qId}"][value="${userAnswers[key]}"]`);
+                            const answer = userAnswers[key];
+                            const qId = key.replace('mcq-', '');
+                            const radio = document.querySelector(`input[name="mcq-${qId}"][value="${answer}"]`);
                             if (radio) {
                                 radio.checked = true;
-                                updateNavStatus(qId, 'answered');
+                                radio.parentElement.classList.add('selected');
+                                updateNavStatus(`mcq-${qId}`, 'answered');
                             }
                         }
                     });
-
-                    // 恢复问答题和论文题需要根据实际存储格式
-                    console.log('已加载', Object.keys(userAnswers).length, '条作答记录');
                 }
             }
         }
 
-        // 导出作答数据
         function exportAnswers() {
+            const candidateName = prompt('请输入考生姓名（可选）:') || '匿名考生';
             const exportData = {
                 exam_id: examId,
-                candidate: prompt('请输入考生姓名（可选）:') || '匿名考生',
+                exam_type: examData.exam_type,
+                candidate: candidateName,
                 exported_at: new Date().toISOString(),
-                duration_minutes: Math.floor((new Date() - startTime) / 60000),
-                answers: userAnswers
+                answers: userAnswers,
+                marked: Array.from(markedQuestions)
+            };
+            // 统计已答题目数量
+            const totalMCQ = examData.mcq.questions.length;
+            let answeredMCQ = 0;
+            for (let i = 1; i <= totalMCQ; i++) { if (userAnswers[`mcq-${i}`]) answeredMCQ++; }
+            let answeredEssay = 0;
+            const essayQuestions = examData.essay.questions.length;
+            for (let i = 0; i < essayQuestions; i++) {
+                const questionNum = i + 76;
+                for (let j = 1; j <= 5; j++) {
+                    if (userAnswers[`essay-${questionNum}-${j}`]) { answeredEssay++; break; }
+                }
+            }
+            const hasPaper = !!userAnswers['paper-82'];
+            exportData.summary = {
+                mcq_answered: answeredMCQ,
+                mcq_total: totalMCQ,
+                essay_answered: answeredEssay,
+                paper_answered: hasPaper
             };
             const dataStr = JSON.stringify(exportData, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
+            const blob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = `ruankao_answers_${examId}_${Date.now()}.json`;
+            document.body.appendChild(a);
             a.click();
+            document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            alert(`答案已导出！\n选择题：${answeredMCQ}/${totalMCQ}\n问答题：${answeredEssay > 0 ? '已作答' : '未作答'}\n论文题：${hasPaper ? '已作答' : '未作答'}\n\n请妥善保存答案文件，用于后续评分。`);
         }
 
-        // 保存进度
         function saveProgress() {
             saveToLocalStorage();
-            alert('进度已保存！您可以在下次打开时继续答题。');
+            updateProgress();
+            renderNavPanels();
+            alert('进度已保存！您可以随时继续答题。');
         }
 
-        // 标记所有题目
-        function markAll() {
-            for (let i = 1; i <= 82; i++) {
-                const navItem = document.getElementById(`nav-${i}`);
-                if (navItem && !navItem.classList.contains('answered')) {
-                    navItem.classList.add('marked');
-                }
+        function showSummary() {
+            const totalMCQ = examData.mcq.questions.length;
+            let answeredMCQ = 0;
+            for (let i = 1; i <= totalMCQ; i++) {
+                if (userAnswers[`mcq-${i}`]) answeredMCQ++;
             }
+            // 统计问答题作答情况
+            let answeredEssay = 0;
+            const essayQuestions = examData.essay.questions.length;
+            for (let i = 0; i < essayQuestions; i++) {
+                const questionNum = i + 76;
+                let hasAnswer = false;
+                for (let j = 1; j <= 5; j++) {
+                    if (userAnswers[`essay-${questionNum}-${j}`]) {
+                        hasAnswer = true;
+                        break;
+                    }
+                }
+                if (hasAnswer) answeredEssay++;
+            }
+            const hasPaper = !!userAnswers['paper-82'];
+            document.getElementById('stats-grid').innerHTML = `
+                <div class="stat-item"><div class="stat-value">${answeredMCQ}/${totalMCQ}</div><div class="stat-label">选择题已答</div></div>
+                <div class="stat-item"><div class="stat-value">${answeredEssay}/${essayQuestions}</div><div class="stat-label">问答题已答</div></div>
+                <div class="stat-item"><div class="stat-value">${hasPaper ? '1/1' : '0/1'}</div><div class="stat-label">论文题已答</div></div>
+                <div class="stat-item"><div class="stat-value">${Math.round(((answeredMCQ + answeredEssay + (hasPaper ? 1 : 0)) / (totalMCQ + essayQuestions + 1)) * 100)}%</div><div class="stat-label">总体进度</div></div>
+            `;
+            document.getElementById('summary-text').textContent = `选择题已完成 ${answeredMCQ}/${totalMCQ} 题，问答题已完成 ${answeredEssay}/${essayQuestions} 题，论文题${hasPaper ? '已完成' : '未完成'}。`;
+            openModal('summary-modal');
         }
 
-        // 计时器
+        function submitExam() {
+            const totalMCQ = examData.mcq.questions.length;
+            let answeredMCQ = 0;
+            for (let i = 1; i <= totalMCQ; i++) { if (userAnswers[`mcq-${i}`]) answeredMCQ++; }
+            // 统计问答题
+            let answeredEssay = 0;
+            const essayQuestions = examData.essay.questions.length;
+            for (let i = 0; i < essayQuestions; i++) {
+                const questionNum = i + 76;
+                let hasAnswer = false;
+                for (let j = 1; j <= 5; j++) {
+                    if (userAnswers[`essay-${questionNum}-${j}`]) {
+                        hasAnswer = true;
+                        break;
+                    }
+                }
+                if (hasAnswer) answeredEssay++;
+            }
+            const hasPaper = !!userAnswers['paper-82'];
+            document.getElementById('submit-stats').innerHTML = `
+                <div class="stat-item"><div class="stat-value">${answeredMCQ}/${totalMCQ}</div><div class="stat-label">选择题已答</div></div>
+                <div class="stat-item"><div class="stat-value">${answeredEssay}/${essayQuestions}</div><div class="stat-label">问答题已答</div></div>
+                <div class="stat-item"><div class="stat-value">${hasPaper ? '1/1' : '0/1'}</div><div class="stat-label">论文题已答</div></div>
+                <div class="stat-item"><div class="stat-value">${markedQuestions.size}</div><div class="stat-label">标记题目</div></div>
+            `;
+            openModal('submit-modal');
+        }
+
+        function confirmSubmit() {
+            exportAnswers();
+            closeModal('submit-modal');
+            alert('答案已导出！请妥善保存答案文件。');
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('show'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+        function updateProgress() {
+            const totalMCQ = examData.mcq.questions.length;
+            let answered = 0;
+            for (let i = 1; i <= totalMCQ; i++) { if (userAnswers[`mcq-${i}`]) answered++; }
+            const percent = Math.round((answered / totalMCQ) * 100);
+            document.getElementById('progress-fill').style.width = percent + '%';
+        }
+
         function startTimer() {
             timerInterval = setInterval(() => {
-                const now = new Date();
-                const diff = now - startTime;
-                const hours = Math.floor(diff / 3600000);
-                const minutes = Math.floor((diff % 3600000) / 60000);
-                const seconds = Math.floor((diff % 60000) / 1000);
+                timeRemaining--;
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    alert('考试时间到！请导出您的答案。');
+                    return;
+                }
+                const h = Math.floor(timeRemaining / 3600);
+                const m = Math.floor((timeRemaining % 3600) / 60);
+                const s = timeRemaining % 60;
                 document.getElementById('timer').textContent =
-                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+                if (timeRemaining < 300) document.getElementById('timer').classList.add('warning');
             }, 1000);
         }
 
-        // 页面关闭前提示
         window.onbeforeunload = function() {
             return '您的作答尚未保存，确定要离开吗？';
         };
@@ -561,93 +742,31 @@ const examData = {
 </html>
 ```
 
-## exam_data.js 格式
-
-```javascript
-// 试题数据文件（从 JSON 转换而来）
-const examData = {
-    exam_id: "ruankao_20260329_001",
-    exam_type: "系统架构设计师",
-    generated_at: "2026-03-29T10:00:00Z",
-    mcq: {
-        total_questions: 75,
-        questions: [
-            {
-                id: 1,
-                question: "题目题干内容",
-                options: {
-                    "A": "选项 A 内容",
-                    "B": "选项 B 内容",
-                    "C": "选项 C 内容",
-                    "D": "选项 D 内容"
-                },
-                knowledge_point: "所属知识点",
-                difficulty: "medium"
-            }
-            // ... 更多选择题
-        ]
-    },
-    essay: {
-        total_questions: 6,
-        questions: [
-            {
-                id: 1,
-                type: "required",
-                title: "题目名称",
-                scenario: "案例背景描述",
-                sub_questions: [
-                    { part: "1.1", text: "具体问题内容", points: 5 }
-                ],
-                knowledge_points: ["知识点 1"],
-                difficulty: "medium"
-            }
-            // ... 更多问答题
-        ]
-    },
-    paper: {
-        topic: {
-            title: "论文题目",
-            background: "命题背景说明",
-            requirements: ["要求 1", "要求 2"],
-            sub_questions: ["子问题 1", "子问题 2"],
-            writing_guidelines: {
-                "字数要求": "2000-2500 字",
-                "结构建议": "摘要 (300 字) + 正文 (1800-2200 字)"
-            }
-        }
-    }
-};
-```
-
-## 工作流程
-
-1. 读取三个试题 JSON 文件（不含答案）
-2. 将 JSON 数据转换为 JavaScript 格式，生成 `exam_data.js`
-3. 生成 HTML 文件，通过 `<script src="exam_data.js">` 加载试题数据
-4. 生成 `exam_manifest.json`（绑定元数据）
-5. 打包评分上下文（含答案和评分标准）
-
 ## 设计要点
 
-### 视觉设计
-- 使用柔和的色彩方案（紫色渐变主题）
-- 充足的留白和合适的行距
-- 清晰的字体和字号（正文 16px+）
-- 高对比度的可读性
-- 现代化的卡片式布局
+### Tab 标签式导航
 
-### 交互设计
-- 选择题点击选项即时反馈
-- 问答题实时字数统计
-- 题号颜色区分（未答/已答/标记）
-- 平滑滚动到指定题目
-- 响应式布局
+- 三个题型分别显示为三个 Tab 标签
+- 点击 Tab 切换对应部分的内容
+- Tab 标签显示题目数量
+- 当前激活的 Tab 有高亮下划线
 
-### 技术方案
-- **使用 `<script>` 标签加载试题数据**，避免本地文件 CORS 问题
-- 作答数据保存到 localStorage
-- 导出功能使用 Blob API 下载 JSON 文件
-- 纯前端实现，无需服务器
+### 题目导航
+
+- 每个 Tab 下方显示该部分的题目导航网格
+- 已答题目显示为绿色
+- 已标记题目显示为橙色
+- 点击导航可滚动到对应题目
+
+### 功能特性
+
+- 选择题：点击选项有高亮效果
+- 问答题/论文题：实时字数统计
+- 题目可以标记（★按钮）
+- 答题进度条显示在顶部
+- 本地存储自动保存
+- 导出答案 JSON 文件
+- 倒计时器（剩余 5 分钟警告）
 
 ## 注意事项
 
