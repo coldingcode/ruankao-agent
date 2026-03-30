@@ -1,0 +1,125 @@
+{
+  "exam_id": "ruankao_20260330_001",
+  "exam_name": "软考系统架构设计师模拟试卷",
+  "exam_type": "系统架构设计师",
+  "version": "1.0.0",
+  "created_at": "2026-03-30T10:00:00Z",
+  "manifest_generated_at": "2026-03-30T14:30:00+08:00",
+
+  "exam_structure": {
+    "total_parts": 3,
+    "total_questions": 82,
+    "total_points": 225,
+    "duration_minutes": 150,
+    "parts": [
+      {
+        "part_number": 1,
+        "name": "选择题",
+        "question_count": 75,
+        "points_per_question": 1,
+        "total_points": 75,
+        "question_numbers": "1-75",
+        "file": "exam_data.js",
+        "data_path": "mcq.questions"
+      },
+      {
+        "part_number": 2,
+        "name": "问答题",
+        "question_count": 6,
+        "total_points": 75,
+        "question_numbers": "76-81",
+        "required_question": 1,
+        "optional_questions": "2-6 (选做 3 题)",
+        "file": "exam_data.js",
+        "data_path": "essay.questions"
+      },
+      {
+        "part_number": 3,
+        "name": "论文题",
+        "question_count": 1,
+        "total_points": 75,
+        "question_numbers": "82",
+        "file": "exam_data.js",
+        "data_path": "paper.topic"
+      }
+    ]
+  },
+
+  "files": {
+    "exam_data": {
+      "filename": "exam_data.js",
+      "description": "试题数据文件（考生可见）",
+      "contains_answers": false,
+      "format": "JavaScript"
+    },
+    "exam_interface": {
+      "filename": "index.html",
+      "description": "考生答题界面（考生可见）",
+      "format": "HTML5"
+    },
+    "mcq_answers": {
+      "filename": "mcq_answers.json",
+      "description": "选择题答案与解析（保密）",
+      "contains_answers": true,
+      "access": "instructor_only"
+    },
+    "essay_scoring_guide": {
+      "filename": "essay_scoring_guide.json",
+      "description": "问答题评分标准（保密）",
+      "contains_answers": true,
+      "access": "instructor_only"
+    },
+    "paper_scoring_guide": {
+      "filename": "paper_scoring_guide.json",
+      "description": "论文题评分标准（保密）",
+      "contains_answers": true,
+      "access": "instructor_only"
+    },
+    "context_pack": {
+      "filename": "exam_context_pack.json",
+      "description": "评分上下文包（保密）",
+      "contains_answers": true,
+      "access": "instructor_only"
+    }
+  },
+
+  "security": {
+    "answers_separated": true,
+    "exam_data_public": true,
+    "scoring_materials_confidential": true,
+    "warning": "答案文件仅供阅卷教师使用，不得向考生泄露"
+  },
+
+  "grading": {
+    "passing_score": 135,
+    "score_breakdown": {
+      "mcq_passing": 45,
+      "essay_passing": 45,
+      "paper_passing": 45
+    },
+    "grading_notes": [
+      "选择题由系统自动判分",
+      "问答题由阅卷教师根据评分标准手动评分",
+      "论文题由阅卷教师根据评分维度综合评分"
+    ]
+  },
+
+  "integrity": {
+    "checksum_algorithm": "SHA-256",
+    "files_hash": {
+      "exam_data.js": "pending_calculation",
+      "index.html": "pending_calculation",
+      "mcq_answers.json": "pending_calculation",
+      "essay_scoring_guide.json": "pending_calculation",
+      "paper_scoring_guide.json": "pending_calculation"
+    }
+  },
+
+  "metadata": {
+    "creator": "软考 AI 命题系统",
+    "target_audience": "系统架构设计师考生",
+    "difficulty_level": "高级",
+    "estimated_completion_rate": "85%",
+    "tags": ["软考", "系统架构设计师", "模拟考试", "2026 年"]
+  }
+}

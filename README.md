@@ -10,8 +10,9 @@
 - 📦 **试卷汇编** - 生成考生友好的 HTML 答题界面
 - ✏️ **智能评分** - 对考生作答进行判断、打分和详细解析
 
-<img src="about/exam.png">
-<img src="about/score.png">
+## 页面参考
+[试卷页面](./about/index.html)
+[解答页面](./about/score_report.html)
 
 ## 项目结构
 
