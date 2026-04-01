@@ -133,8 +133,15 @@ version: 1.0.0
 
 ### 选择题评分
 - 每题 1 分，答对得分，答错或不答不得分
-- 提供每道题的答案和解析
+- 提供每道题的答案和**详细解析**
 - 统计正确率和不掌握的知识点
+- **解析要求**（知其所以然）：
+  1. **核心概念** - 解释题目考查的核心知识点定义
+  2. **正确选项** - 说明为什么选这个答案，依据是什么
+  3. **错误分析** - 分析考生可能的错误原因（概念混淆、记忆偏差、理解错误）
+  4. **排除干扰** - 逐个说明其他选项为什么错误
+  5. **举一反三** - 提供相关知识点或类似考点的提示
+  6. **记忆技巧** - 如有，提供口诀、对比表等记忆辅助
 
 ### 问答题评分
 - 采用要点式评分法
@@ -167,7 +174,17 @@ version: 1.0.0
         .score-card { /* 分数卡片 */ }
         .correct { color: #28a745; }
         .incorrect { color: #dc3545; }
-        .analysis { background: #f8f9fa; padding: 10px; border-radius: 4px; }
+        .analysis { background: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 12px; }
+        .analysis-title { font-weight: 600; color: #2c3e50; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .analysis-content { line-height: 1.8; color: #444; }
+        .analysis-section { margin: 12px 0; padding: 10px; background: white; border-radius: 4px; border-left: 3px solid #3498db; }
+        .analysis-section h5 { margin: 0 0 6px 0; color: #2980b9; font-size: 14px; }
+        .analysis-section p { margin: 0; color: #555; }
+        .option-analysis { margin: 8px 0; }
+        .option-correct { color: #27ae60; font-weight: 500; }
+        .option-wrong { color: #7f8c8d; }
+        .memory-tip { background: #fff3cd; border-left: 3px solid #ffc107; padding: 10px; margin-top: 10px; border-radius: 4px; }
+        .common-mistake { background: #f8d7da; border-left: 3px solid #dc3545; padding: 10px; margin-top: 10px; border-radius: 4px; }
         .score-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .pass { background: #d4edda; }
         .fail { background: #f8d7da; }
@@ -197,9 +214,49 @@ version: 1.0.0
     </div>
 
     <section>
-        <h2>选择题详解</h2>
+        <h2>选择题详解（知其所以然）</h2>
         <div class="mcq-details">
-            <!-- 每题的作答和解析 -->
+            <!-- 每题的作答和详细解析 -->
+            <div class="mcq-item correct|incorrect|unanswered">
+                <div class="mcq-header">
+                    <span class="mcq-question">第 X 题</span>
+                    <span class="status-badge">正确/错误/未答</span>
+                </div>
+                <div class="mcq-answer">
+                    你的答案：<span>X</span> | 正确答案：<span>X</span>
+                </div>
+                <div class="analysis">
+                    <div class="analysis-title">📖 深度解析</div>
+                    
+                    <div class="analysis-section">
+                        <h5>💡 核心概念</h5>
+                        <p>本题考查的知识点定义和背景说明...</p>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h5>✅ 正确选项分析</h5>
+                        <p>为什么选这个答案，理论依据是什么...</p>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h5>❌ 干扰项排除</h5>
+                        <div class="option-analysis"><span class="option-wrong">A 选项：</span>错误原因...</div>
+                        <div class="option-analysis"><span class="option-correct">B 选项：</span>正确原因...</div>
+                        <div class="option-analysis"><span class="option-wrong">C 选项：</span>错误原因...</div>
+                        <div class="option-analysis"><span class="option-wrong">D 选项：</span>错误原因...</div>
+                    </div>
+                    
+                    <div class="common-mistake">
+                        <h5>⚠️ 常见错误</h5>
+                        <p>分析考生可能的错误原因：概念混淆/记忆偏差/理解错误...</p>
+                    </div>
+                    
+                    <div class="memory-tip">
+                        <h5>📌 记忆技巧</h5>
+                        <p>口诀/对比表/联想记忆法...</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
