@@ -62,6 +62,9 @@ ruankao-agent/
 
 # 2. 安装插件
 /plugin install ruankao-agent
+
+# 3.加载插件
+/plugin reload
 ```
 
 安装完成后，运行 `/plugin list` 验证，看到 `ruankao-agent` 即表示安装成功。
